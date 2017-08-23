@@ -2,31 +2,62 @@
 <html lang="de">
 <head>
 	<meta charset="UTF-8">
-	<title>WetterApp</title>
+	<title>WeatherNow</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script type="text/javascript" src="main.js"></script>
 	<link rel="stylesheet" href="main.css">
 </head>
 <body>
-<h1>WETTER WEBAPP</h1>
-<h2>by J. Goetze</h2>
+<h1>WeatherNow</h1>
+<h4 class="credit">by J. Goetze</h4>
+
+<div id="selectionDiv" class="content">
+	<form id="searchSelection" name="searchSelection" action="index.php" method="post">
+		<label for="citySelection">City: </label>
+		<input type="text" name="city" id="citySelection" placeholder="Name of the city" required /><br />
+		<label for="countryIdSelection">Country ID: </label>
+		<input type="text" name="country_id" id="countryIdSelection" placeholder="Country ID" required /><br />
+		<label for="isocodeShow" id="isocodeShowLabel">Press me for Country ID:</label>
+		<input type="checkbox" name="isocodeShow" id="isocodeShow" hidden>
+		<input type="Submit" value="Submit" class="button" />
+		<iframe id="isocodeList" src="https://goes.gsfc.nasa.gov/text/web_country_codes.html"></iframe>
+	</form>
+</div>
+
+<div id="currentWeatherInfo" class="content">
+	<p>
+	<h2>Weather in {{city}}, {{countryCode}}</h2><br />
+	<label> Date:</label><span>{{timestamp}}</span><br />
+	<label> Weather:</label><span> {{weatherGroup}}</span><br />
+	<label> Tempreture:</label><span> {{temperature}} ˚C</span><br />
+	<label> Weather Detail:</label> <span>{{weatherDescription}}</span><br />
+	<label> Wind:</label><span> Light breeze, {{windSpeed}} m/s, {{windDirection}} ( {{windDirectionDeg}} )</span><br />
+	<label> Cloudiness:</label><span> {{cloudiness}} %</span><br />
+	<label> Pressure:</label><span> 1019 hpa</span><br />
+	<label> Humidity:</label><span> {{humidity}} %</span><br />
+	<label> Sunrise:</label><span> {{sunrise}} am</span><br />
+	<label> Sunset:</label><span> {{sunset}} pm</span><br />
+	<label> Geo coords:</label><span> [{{GeoLocationLongitude}}, {{GeoLocationLatitude}}]</span><br />
+	</p>
+</div>
 
 
-<form id="searchSelection" name="searchSelection"  action="index.php" >
-	<select id="city" name="city" required form="searchSelection">
-		<option value=""></option>
-		<option value="Berlin">Berlin</option>
-		<option value="London">London</option>
-	</select>
-
-
-	<select id="country" name="country" required form="searchSelection">
-		<option value=""></option>
-		<option value="de">Deutschland</option>
-		<option value="uk">Gro&szlig;britannien</option>
-	</select>
-
-</form>
+<div id="historyWeatherInfo" class="content">
+	<p>
+	<h2>Weather in {{city}}, {{countryCode}}</h2><br />
+	<label> Date:</label><span>{{timestamp}}</span><br />
+	<label> Weather:</label><span> {{weatherGroup}}</span><br />
+	<label> Tempreture:</label><span> {{temperature}} ˚C</span><br />
+	<label> Weather Detail:</label> <span>{{weatherDescription}}</span><br />
+	<label> Wind:</label><span> Light breeze, {{windSpeed}} m/s, {{windDirection}} ( {{windDirectionDeg}} )</span><br />
+	<label> Cloudiness:</label><span> {{cloudiness}} %</span><br />
+	<label> Pressure:</label><span> 1019 hpa</span><br />
+	<label> Humidity:</label><span> {{humidity}} %</span><br />
+	<label> Sunrise:</label><span> {{sunrise}} am</span><br />
+	<label> Sunset:</label><span> {{sunset}} pm</span><br />
+	<label> Geo coords:</label><span> [{{GeoLocationLongitude}}, {{GeoLocationLatitude}}]</span><br />
+	</p>
+</div>
 
 </body>
 </html>

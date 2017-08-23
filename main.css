@@ -1,0 +1,39 @@
+
+
+
+#isocodeList {
+	width: 100%;
+	max-width: 700px;
+	height: 200px;
+}
+
+input[type=checkbox]:checked ~ #isocodeList {
+	display: block;
+}
+
+#isocodeList {
+	display: none;
+}
+
+.content {
+	margin: 20px;
+}
+
+label{
+	display: inline-block;
+	width:30%;
+	margin: 5px 0px;
+}
+
+#currentWeatherInfo h2{
+	margin-bottom: 0px;
+}
+
+#isocodeShowLabel{
+	text-decoration:underline ;
+	ursor: pointer;
+	cursor: hand;
+}
+#isocodeShowLabel:hover{
+	color: red;
+}
