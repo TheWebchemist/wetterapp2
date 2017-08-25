@@ -9,9 +9,17 @@
 
 $apikey = "2f64cae0b27f72ac6fb12d363a0386c0";
 //$apiurl = "http://api.openweathermap.org/data/2.5/forecast?&APPID=";
-$apiurl  = "http://api.openweathermap.org/data/2.5/weather?&APPID=";
-$city    = $_POST["city"];
+$apiurl = "http://api.openweathermap.org/data/2.5/weather?&APPID=";
+
+$city = $_POST["city"];
+if ( $city == "" ) {
+	$city = "Berlin";
+}
+
 $country = $_POST["country_id"];
+if ( $country == "" ) {
+	$country = "de";
+}
 
 
 if ( ( isset( $city ) && $city !== "" ) && ( isset( $country ) && $country !== "" ) ) {
@@ -21,39 +29,39 @@ if ( ( isset( $city ) && $city !== "" ) && ( isset( $country ) && $country !== "
 }
 
 
-$coordinates          = $url->coord;
-$coordLongitude       = $url["coord"]["lon"];
-$coordLatitude        = $url["coord"]["lat"];
-$weather              = $url->weather;
-$weatherConditionID   = $url["weather"][0]["id"];
-$weatherGroup         = $url["weather"][0]["main"];
-$weatherDescription   = $url["weather"][0]["description"];
-$weatherIconId        = $url["weather"][0]["icon"];
-$main                 = $url->main;
-$mainTemperature      = $url["main"]["temp"];
-$mainPressure         = $url["main"]["pressure"];
-$mainHumidity         = $url["main"]["humidity"];
-$mainTempMin          = $url["main"]["temp_min"];
-$mainTempMax          = $url["main"]["temp_max"];
-$mainPressureSeaLV    = $url["main"]["sea_level"];
-$mainPressureGroundLV = $url["main"]["grnd_level"];
-$wind                 = $url->wind;
-$windSpeed            = $url["wind"]["speed"];
-$windDirectionDeg     = $url["wind"]["deg"];
-$clouds               = $url->clouds;
-$cloudiness           = $url["clouds"]["all"];
-$rain                 = $url->rain;
-$RainVolume3h         = $url["rain"]["3h"];
-$snow                 = $url->snow;
-$snowVolume3h         = $url["snow"]["3h"];
-$timestamp            = $url["dt"];
-$sys                  = $url->sys;
-$sysCountryCode       = $url["sys"]["country"];
-$sysSunrise           = $url["sys"]["sunrise"];
-$sysSunset            = $url["sys"]["sunset"];
-$CityID               = $url["id"];
-$CityName             = $url["name"];
-
+$coordinates          = (string)($url->coord);
+$coordLongitude       = (string)($url["coord"]["lon"]);
+$coordLatitude        = (string)($url["coord"]["lat"]);
+$weather              = (string)($url->weather);
+$weatherConditionID   = (string)($url["weather"][0]["id"]);
+$weatherGroup         = (string)($url["weather"][0]["main"]);
+$weatherDescription   = (string)($url["weather"][0]["description"]);
+$weatherIconId        = (string)($url["weather"][0]["icon"]);
+$main                 = (string)($url->main);
+$mainTemperature      = (string)($url["main"]["temp"]);
+$mainPressure         = (string)($url["main"]["pressure"]);
+$mainHumidity         = (string)($url["main"]["humidity"]);
+$mainTempMin          = (string)($url["main"]["temp_min"]);
+$mainTempMax          = (string)($url["main"]["temp_max"]);
+$mainPressureSeaLV    = (string)($url["main"]["sea_level"]);
+$mainPressureGroundLV = (string)($url["main"]["grnd_level"]);
+$wind                 = (string)($url->wind);
+$windSpeed            = (string)($url["wind"]["speed"]);
+$windDirectionDeg     = (string)($url["wind"]["deg"]);
+$clouds               = (string)($url->clouds);
+$cloudiness           = (string)($url["clouds"]["all"]);
+$rain                 = (string)($url->rain);
+$RainVolume3h         = (string)($url["rain"]["3h"]);
+$snow                 = (string)($url->snow);
+$snowVolume3h         = (string)($url["snow"]["3h"]);
+$timestamp            = (string)($url["dt"]);
+$sys                  = (string)($url->sys);
+$sysCountryCode       = (string)($url["sys"]["country"]);
+$sysSunrise           = (string)($url["sys"]["sunrise"]);
+$sysSunset            = (string)($url["sys"]["sunset"]);
+$CityID               = (string)($url["id"]);
+$CityName             = (string)($url["name"]);
+var_dump($url);
 
 $windClassification = intval( $windSpeed );
 if ( $windClassification >= 32.7 ) {
@@ -162,7 +170,7 @@ $html = str_replace( "{{windDirectionDeg}}", $windDirectionDeg, $html );
 $html = str_replace( "{{cloudiness}}", $cloudiness, $html );
 $html = str_replace( "{{rainVol}}", $RainVolume3h, $html );
 $html = str_replace( "{{snowVol}}", $snowVolume3h, $html );
-$html = str_replace( "{{timestamp}}", date( 'Y-m-d H:i:s', $timestamp ), $html );
+$html = str_replace( "{{timestampx}}", date( 'Y-m-d H:i:s', $timestamp ), $html );
 $html = str_replace( "{{countryCode}}", $sysCountryCode, $html );
 $html = str_replace( "{{sunrise}}", date( 'H:i', $sysSunrise ), $html );
 $html = str_replace( "{{sunset}}", date( 'H:i', $sysSunset ), $html );
@@ -172,6 +180,97 @@ $html = str_replace( "{{city}}", $CityName, $html );
 echo $html;
 
 
+$pdoConnect = new PDO( 'mysql:host=localhost;dbname=weatherdata', 'root', 'root' );
 
+
+
+$pdoQuery= "INSERT INTO 'history'
+(
+'GeoLocationLongitude',
+'GeoLocationLatitude',
+'weatherGroup',
+'weatherDescription',
+'weatherIconId',
+'temperature',
+'pressure',
+'humidity',
+'tempMin',
+'tempMax',
+'pressureSeaLV',
+'pressureGroundLV',
+'windSpeed',
+'windDirection',
+'windScale',
+'windDirectionDeg',
+'cloudiness',
+'rainVol',
+'snowVol',
+'timestampx',
+'countryCode',
+'sunrise',
+'sunset',
+'cityID',
+'city'
+)
+VALUES
+(
+:coordLongitude,
+:coordLatitude,
+:weatherGroup,
+:weatherDescription,
+:weatherIconId,
+:mainTemperature,
+:mainPressure,
+:mainHumidity,
+:mainTempMin,
+:mainTempMax,
+:mainPressureSeaLV,
+:mainPressureGroundLV,
+:windSpeed,
+:windDirection,
+:windScale,
+:windDirectionDeg,
+:cloudiness,
+:RainVolume3h,
+:snowVolume3h,
+:timestampx,
+:sysCountryCode,
+:sysSunrise,
+:sysSunset,
+:CityID,
+:CityName,
+)";
+
+
+$pdoResult =  $pdoConnect->prepare($pdoQuery);
+
+
+$pdoExec = $pdoResult->execute(array(
+':coordLongitude'=> $coordLongitude,
+':coordLatitude'=> $coordLatitude,
+':weatherGroup'=> $weatherGroup,
+':weatherDescription'=> $weatherDescription,
+':weatherIconId'=> $weatherIconId,
+':mainTemperature'=> $mainTemperature,
+':mainPressure'=> $mainPressure,
+':mainHumidity'=> $mainHumidity,
+':mainTempMin'=> $mainTempMin,
+':mainTempMax'=> $mainTempMax,
+':mainPressureSeaLV'=> $mainPressureSeaLV,
+':mainPressureGroundLV'=> $mainPressureGroundLV,
+':windSpeed'=> $windSpeed,
+':windDirection'=> $windDirection,
+':windScale'=> $windScale,
+':windDirectionDeg'=> $windDirectionDeg,
+':cloudiness'=> $cloudiness,
+':RainVolume3h'=>$RainVolume3h,
+':snowVolume3h'=> $snowVolume3h,
+':timestampx'=> $timestamp,
+':sysCountryCode'=> $sysCountryCode,
+':sysSunrise'=> $sysSunrise,
+':sysSunset'=> $sysSunset,
+':CityID'=> $CityID,
+':CityName'=> $CityName
+));
 
 
