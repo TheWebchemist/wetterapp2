@@ -8,61 +8,51 @@
 
 
 $apikey = "2f64cae0b27f72ac6fb12d363a0386c0";
-//$apiurl = "http://api.openweathermap.org/data/2.5/forecast?&APPID=";
-$apiurl = "http://api.openweathermap.org/data/2.5/weather?&APPID=";
 
+/*default fallback*/
 $city = $_POST["city"];
 if ( $city == "" ) {
 	$city = "Berlin";
 }
-
 $country = $_POST["country_id"];
 if ( $country == "" ) {
 	$country = "de";
 }
 
-
+/*api querry*/
 if ( ( isset( $city ) && $city !== "" ) && ( isset( $country ) && $country !== "" ) ) {
 	$url = $apiurl . $apikey . "&q=" . $city . "," . $country . "&units=metric";
 	$url = file_get_contents( $url );
 	$url = json_decode( $url, TRUE );
 }
 
+/*json data extraction*/
+$coordLongitude       = (string) ( $url["coord"]["lon"] );
+$coordLatitude        = (string) ( $url["coord"]["lat"] );
+$weatherConditionID   = (string) ( $url["weather"][0]["id"] );
+$weatherGroup         = (string) ( $url["weather"][0]["main"] );
+$weatherDescription   = (string) ( $url["weather"][0]["description"] );
+$weatherIconId        = (string) ( $url["weather"][0]["icon"] );
+$mainTemperature      = (string) ( $url["main"]["temp"] );
+$mainPressure         = (string) ( $url["main"]["pressure"] );
+$mainHumidity         = (string) ( $url["main"]["humidity"] );
+$mainTempMin          = (string) ( $url["main"]["temp_min"] );
+$mainTempMax          = (string) ( $url["main"]["temp_max"] );
+$mainPressureSeaLV    = (string) ( $url["main"]["sea_level"] );
+$mainPressureGroundLV = (string) ( $url["main"]["grnd_level"] );
+$windSpeed            = (string) ( $url["wind"]["speed"] );
+$windDirectionDeg     = (string) ( $url["wind"]["deg"] );
+$cloudiness           = (string) ( $url["clouds"]["all"] );
+$RainVolume3h         = (string) ( $url["rain"]["3h"] );
+$snowVolume3h         = (string) ( $url["snow"]["3h"] );
+$timestampx           = (string) ( $url["dt"] );
+$sysCountryCode       = (string) ( $url["sys"]["country"] );
+$sysSunrise           = (string) ( $url["sys"]["sunrise"] );
+$sysSunset            = (string) ( $url["sys"]["sunset"] );
+$CityID               = (string) ( $url["id"] );
+$CityName             = (string) ( $url["name"] );
 
-$coordinates          = (string)($url->coord);
-$coordLongitude       = (string)($url["coord"]["lon"]);
-$coordLatitude        = (string)($url["coord"]["lat"]);
-$weather              = (string)($url->weather);
-$weatherConditionID   = (string)($url["weather"][0]["id"]);
-$weatherGroup         = (string)($url["weather"][0]["main"]);
-$weatherDescription   = (string)($url["weather"][0]["description"]);
-$weatherIconId        = (string)($url["weather"][0]["icon"]);
-$main                 = (string)($url->main);
-$mainTemperature      = (string)($url["main"]["temp"]);
-$mainPressure         = (string)($url["main"]["pressure"]);
-$mainHumidity         = (string)($url["main"]["humidity"]);
-$mainTempMin          = (string)($url["main"]["temp_min"]);
-$mainTempMax          = (string)($url["main"]["temp_max"]);
-$mainPressureSeaLV    = (string)($url["main"]["sea_level"]);
-$mainPressureGroundLV = (string)($url["main"]["grnd_level"]);
-$wind                 = (string)($url->wind);
-$windSpeed            = (string)($url["wind"]["speed"]);
-$windDirectionDeg     = (string)($url["wind"]["deg"]);
-$clouds               = (string)($url->clouds);
-$cloudiness           = (string)($url["clouds"]["all"]);
-$rain                 = (string)($url->rain);
-$RainVolume3h         = (string)($url["rain"]["3h"]);
-$snow                 = (string)($url->snow);
-$snowVolume3h         = (string)($url["snow"]["3h"]);
-$timestamp            = (string)($url["dt"]);
-$sys                  = (string)($url->sys);
-$sysCountryCode       = (string)($url["sys"]["country"]);
-$sysSunrise           = (string)($url["sys"]["sunrise"]);
-$sysSunset            = (string)($url["sys"]["sunset"]);
-$CityID               = (string)($url["id"]);
-$CityName             = (string)($url["name"]);
-var_dump($url);
-
+/*wind force*/
 $windClassification = intval( $windSpeed );
 if ( $windClassification >= 32.7 ) {
 	$windScale = "Hurricane force";
@@ -111,6 +101,7 @@ if ( $windClassification >= 32.7 ) {
 	}
 }
 
+/*wind direction*/
 $windDeg = intval( $windDirectionDeg );
 if ( ( $windDeg < 360 ) && ( $windDeg >= 337.5 ) ) {
 	$windDirection = "North";
@@ -150,6 +141,7 @@ if ( ( $windDeg < 360 ) && ( $windDeg >= 337.5 ) ) {
 	}
 }
 
+/*templating*/
 $html = file_get_contents( "template.html" );
 $html = str_replace( "{{GeoLocationLongitude}}", $coordLongitude, $html );
 $html = str_replace( "{{GeoLocationLatitude}}", $coordLatitude, $html );
@@ -170,107 +162,59 @@ $html = str_replace( "{{windDirectionDeg}}", $windDirectionDeg, $html );
 $html = str_replace( "{{cloudiness}}", $cloudiness, $html );
 $html = str_replace( "{{rainVol}}", $RainVolume3h, $html );
 $html = str_replace( "{{snowVol}}", $snowVolume3h, $html );
-$html = str_replace( "{{timestampx}}", date( 'Y-m-d H:i:s', $timestamp ), $html );
+$html = str_replace( "{{timestampx}}", date( 'Y-m-d H:i:s', $timestampx ), $html );
 $html = str_replace( "{{countryCode}}", $sysCountryCode, $html );
 $html = str_replace( "{{sunrise}}", date( 'H:i', $sysSunrise ), $html );
 $html = str_replace( "{{sunset}}", date( 'H:i', $sysSunset ), $html );
 $html = str_replace( "{{cityID}}", $CityID, $html );
 $html = str_replace( "{{city}}", $CityName, $html );
-
 echo $html;
 
+/*database*/
 
-$pdoConnect = new PDO( 'mysql:host=localhost;dbname=weatherdata', 'root', 'root' );
+/*entry check*/
+if ( isset( $_POST["city"] ) && isset( $_POST["country_id"] ) ) {
 
+	/*connection check*/
+	try {
+		$pdoConnect = new PDO( 'mysql:host=localhost;dbname=weatherdata', 'root', 'root' );
+	} catch ( Exception $exc ) {
+		echo $exc->getTraceAsString();
+	}
 
+	/*duplicate check*/
+	$pdoQueryTest  = "SELECT timestampx, city, countryCode FROM history WHERE timestampx='$timestampx' AND city='$CityName' AND countryCode= '$sysCountryCode'";
+	$pdoResultTest = $pdoConnect->prepare( $pdoQueryTest );
+	$pdoResultTest->execute();
+	$pdoQueryTestAnzahl = $pdoResultTest->fetchAll();
+	if ( !empty( $pdoQueryTestAnzahl ) ) {
+		echo( "Sorry Entry is Duplicated" );
+	} else {
 
-$pdoQuery= "INSERT INTO 'history'
-(
-'GeoLocationLongitude',
-'GeoLocationLatitude',
-'weatherGroup',
-'weatherDescription',
-'weatherIconId',
-'temperature',
-'pressure',
-'humidity',
-'tempMin',
-'tempMax',
-'pressureSeaLV',
-'pressureGroundLV',
-'windSpeed',
-'windDirection',
-'windScale',
-'windDirectionDeg',
-'cloudiness',
-'rainVol',
-'snowVol',
-'timestampx',
-'countryCode',
-'sunrise',
-'sunset',
-'cityID',
-'city'
-)
-VALUES
-(
-:coordLongitude,
-:coordLatitude,
-:weatherGroup,
-:weatherDescription,
-:weatherIconId,
-:mainTemperature,
-:mainPressure,
-:mainHumidity,
-:mainTempMin,
-:mainTempMax,
-:mainPressureSeaLV,
-:mainPressureGroundLV,
-:windSpeed,
-:windDirection,
-:windScale,
-:windDirectionDeg,
-:cloudiness,
-:RainVolume3h,
-:snowVolume3h,
-:timestampx,
-:sysCountryCode,
-:sysSunrise,
-:sysSunset,
-:CityID,
-:CityName,
-)";
+		/*writing database*/
+		$pdoQueryWrite  = "INSERT INTO history (GeoLocationLongitude,GeoLocationLatitude,weatherGroup,weatherDescription,weatherIconId,temperature,pressure,humidity,tempMin,tempMax,pressureSeaLV,pressureGroundLV,windSpeed,windDirection,windScale,windDirectionDeg,cloudiness,rainVol,snowVol,timestampx,countryCode,sunrise,sunset,cityID,city)
+		VALUES('$coordLongitude','$coordLatitude','$weatherGroup','$weatherDescription','$weatherIconId','$mainTemperature','$mainPressure','$mainHumidity','$mainTempMin','$mainTempMax','$mainPressureSeaLV','$mainPressureGroundLV','$windSpeed','$windDirection','$windScale','$windDirectionDeg','$cloudiness','$RainVolume3h','$snowVolume3h','$timestampx','$sysCountryCode','$sysSunrise','$sysSunset','$CityID','$CityName')";
+		$pdoResultWrite = $pdoConnect->prepare( $pdoQueryWrite );
+		$pdoResultWrite->execute();
+		if ( $pdoResultWrite ) {
+			echo 'Data Insert';
+		} else {
+			echo 'Data Not Insert';
+		}
+	}
 
 
-$pdoResult =  $pdoConnect->prepare($pdoQuery);
+	$pdoQueryHistory = "SELECT * FROM history WHERE city='$CityName' AND countryCode= '$sysCountryCode'";
+	$pdoResultHistory = $pdoConnect->prepare( $pdoQueryHistory );
+	$pdoResultHistory->execute();
+	foreach ($pdoResultHistory as$row){
+		var_dump($row);
+	}
 
 
-$pdoExec = $pdoResult->execute(array(
-':coordLongitude'=> $coordLongitude,
-':coordLatitude'=> $coordLatitude,
-':weatherGroup'=> $weatherGroup,
-':weatherDescription'=> $weatherDescription,
-':weatherIconId'=> $weatherIconId,
-':mainTemperature'=> $mainTemperature,
-':mainPressure'=> $mainPressure,
-':mainHumidity'=> $mainHumidity,
-':mainTempMin'=> $mainTempMin,
-':mainTempMax'=> $mainTempMax,
-':mainPressureSeaLV'=> $mainPressureSeaLV,
-':mainPressureGroundLV'=> $mainPressureGroundLV,
-':windSpeed'=> $windSpeed,
-':windDirection'=> $windDirection,
-':windScale'=> $windScale,
-':windDirectionDeg'=> $windDirectionDeg,
-':cloudiness'=> $cloudiness,
-':RainVolume3h'=>$RainVolume3h,
-':snowVolume3h'=> $snowVolume3h,
-':timestampx'=> $timestamp,
-':sysCountryCode'=> $sysCountryCode,
-':sysSunrise'=> $sysSunrise,
-':sysSunset'=> $sysSunset,
-':CityID'=> $CityID,
-':CityName'=> $CityName
-));
+//	$pdoResultHistoryAnzahl = $pdoResultHistory->fetchAll();
+//	print_r($pdoResultHistoryAnzahl);
 
 
+
+}
