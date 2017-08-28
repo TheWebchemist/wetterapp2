@@ -77,18 +77,19 @@ try {
 if ( isset( $_POST["city"] ) && isset( $_POST["country_id"] ) ) {
 
 	if ( !checkDuplicatet( $data, $pdoConnect ) ) {
-		echo( "<br />" . "Sorry Entry for " . $data["CityName"] . " is Duplicated" );
+//		echo "<h5 class='container'><br />Data for " . $data['CityName'] . ", " . $data['sysCountryCode'] . " could not be updated</h5>";
+
 	} else {
 
 		/*writing database*/
 		$pdoQueryWrite  = insertInto( $data );
 		$pdoResultWrite = $pdoConnect->prepare( $pdoQueryWrite );
 		$pdoResultWrite->execute();
-		if ( $pdoResultWrite ) {
-			echo( "<br />" . "Data for " . $data["CityName"] . " Insert" );
-		} else {
-			echo( "<br />" . "Data for " . $data["CityName"] . " Not Insert" );
-		}
+//		if ( $pdoResultWrite ) {
+//			echo "<h5 class='container'><br />Data for " . $data['CityName'] . ", " . $data['sysCountryCode'] . "  was updated</h5>";
+//		} else {
+//			echo "<h5 class='container'><br />Data for " . $data['CityName'] . ", " . $data['sysCountryCode'] . " could not be updated</h5>";
+//		}
 	}
 
 	/*showing all saved results*/
@@ -105,7 +106,7 @@ if ( isset( $_POST["city"] ) && isset( $_POST["country_id"] ) ) {
 	};
 
 
-	echo( "<script type='text/javascript'>var weatherData = " . json_encode( $pdoResultHistoryAnzahl ) . "</script>" );
+	echo "<script type='text/javascript'>var weatherData = " . json_encode( $pdoResultHistoryAnzahl ) . "</script>";
 
 }
 
@@ -119,15 +120,14 @@ if ( isset( $_GET["sync"] ) && $_GET["sync"] === "all" ) {
 	$stmt->execute();
 }
 
-echo( "<br />" . "<br />" . "This Citys have autohistory:" );
-$pdoQueryGetCitys  = "SELECT city,countryCode FROM history	 GROUP BY city";
+echo "<h2 class='container'>  This Citys have autohistory: </h2>";
+$pdoQueryGetCitys  = "SELECT DISTINCT city,countryCode FROM history	 GROUP BY city ORDER BY city ASC ";
 $pdoResultGetCitys = $pdoConnect->prepare( $pdoQueryGetCitys );
 $pdoResultGetCitys->execute();
 $pdoResultGetCitysAnzahl = $pdoResultGetCitys->fetchAll( PDO::FETCH_ASSOC );
 
 
 for ( $i = 0; $i < count( $pdoResultGetCitysAnzahl ); $i ++ ) {
-
 	$city    = ( $pdoResultGetCitysAnzahl[$i]["city"] );
 	$country = ( $pdoResultGetCitysAnzahl[$i]["countryCode"] );
 	if ( $city !== "" ) {
@@ -140,19 +140,20 @@ for ( $i = 0; $i < count( $pdoResultGetCitysAnzahl ); $i ++ ) {
 		$data = zuordnung( $url );
 
 		if ( !checkDuplicatet( $data, $pdoConnect ) ) {
-			echo( "<br />" . "Sorry Entry for " . $data["CityName"] . " is Duplicated" );
+			echo "<h5 class='container'><br />Data for <strong>" . $data['CityName'] . ", " . $data['sysCountryCode'] . "</strong> could not be updated , timestamp already exists</h5>";
+
 		} else {
 
 			/*writing database*/
 			$pdoQueryWrite  = insertInto( $data );
 			$pdoResultWrite = $pdoConnect->prepare( $pdoQueryWrite );
 			$pdoResultWrite->execute();
+
 			if ( $pdoResultWrite ) {
-				echo( "<br />" . "Data for " . $data["CityName"] . " Insert" );
+				echo "<h5 class='container'><br />Data for <strong>" . $data['CityName'] . ", " . $data['sysCountryCode'] . "</strong>  was updated</h5>";
 			} else {
-				echo( "<br />" . "Data for " . $data["CityName"] . " Not Insert" );
+				echo "<h5 class='container'><br />Data for <strong>" . $data['CityName'] . ", " . $data['sysCountryCode'] . "</strong> could not be updated, timestamp already exists</h5>";
 			}
 		}
 	}
-
 };
