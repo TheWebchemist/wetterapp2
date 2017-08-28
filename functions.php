@@ -111,93 +111,60 @@ function getWindDirection( $windDirectionDeg ) {
 	$windDeg = intval( $windDirectionDeg );
 	if ( ( $windDeg < 360 ) && ( $windDeg >= 337.5 ) ) {
 		$windDirection = "North";
+	} elseif ( ( $windDeg < 337.5 ) && ( $windDeg >= 292.5 ) ) {
+		$windDirection = "North West";
+	} elseif ( ( $windDeg < 292.5 ) && ( $windDeg >= 247.5 ) ) {
+		$windDirection = "West";
+	} elseif ( ( $windDeg < 247.5 ) && ( $windDeg >= 202.5 ) ) {
+		$windDirection = "South West";
+	} elseif ( ( $windDeg < 202.5 ) && ( $windDeg >= 157.5 ) ) {
+		$windDirection = "South";
+	} elseif ( ( $windDeg < 157.5 ) && ( $windDeg >= 112.5 ) ) {
+		$windDirection = "South East";
+	} elseif ( ( $windDeg < 112.5 ) && ( $windDeg >= 67.5 ) ) {
+		$windDirection = "East";
+	} elseif ( ( $windDeg < 67.5 ) && ( $windDeg >= 22.5 ) ) {
+		$windDirection = "North East";
+	} elseif ( ( $windDeg < 22.5 ) && ( $windDeg >= 0 ) ) {
+		$windDirection = "North";
 	} else {
-		if ( ( $windDeg < 337.5 ) && ( $windDeg >= 292.5 ) ) {
-			$windDirection = "North West";
-		} else {
-			if ( ( $windDeg < 292.5 ) && ( $windDeg >= 247.5 ) ) {
-				$windDirection = "West";
-			} else {
-				if ( ( $windDeg < 247.5 ) && ( $windDeg >= 202.5 ) ) {
-					$windDirection = "South West";
-				} else {
-					if ( ( $windDeg < 202.5 ) && ( $windDeg >= 157.5 ) ) {
-						$windDirection = "South";
-					} else {
-						if ( ( $windDeg < 157.5 ) && ( $windDeg >= 112.5 ) ) {
-							$windDirection = "South East";
-						} else {
-							if ( ( $windDeg < 112.5 ) && ( $windDeg >= 67.5 ) ) {
-								$windDirection = "East";
-							} else {
-								if ( ( $windDeg < 67.5 ) && ( $windDeg >= 22.5 ) ) {
-									$windDirection = "North East";
-								} else {
-									if ( ( $windDeg < 22.5 ) && ( $windDeg >= 0 ) ) {
-										$windDirection = "North";
-									} else {
-										$windDirection = "";
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		$windDirection = "";
 	}
+
 
 	return $windDirection;
 }
+
 
 function getWindScale( $windSpeed ) {
 	/*wind force*/
 	$windClassification = intval( $windSpeed );
 	if ( $windClassification >= 32.7 ) {
 		$windScale = "Hurricane force";
+	} elseif ( ( $windClassification < 32.7 ) && ( $windClassification >= 28.5 ) ) {
+		$windScale = "Violent storm";
+	} elseif ( ( $windClassification < 28.5 ) && ( $windClassification >= 24.5 ) ) {
+		$windScale = "Storm, whole gale";
+	} elseif ( ( $windClassification < 24.5 ) && ( $windClassification >= 20.8 ) ) {
+		$windScale = "Strong, severe gale";
+	} elseif ( ( $windClassification < 20.8 ) && ( $windClassification >= 17.2 ) ) {
+		$windScale = "Gale, fresh gale";
+	} elseif ( ( $windClassification < 17.2 ) && ( $windClassification >= 13.9 ) ) {
+		$windScale = "High wind, moderate gale, near gale";
+	} elseif ( ( $windClassification < 13.9 ) && ( $windClassification >= 10.8 ) ) {
+		$windScale = "Strong breeze";
+	} elseif ( ( $windClassification < 10.8 ) && ( $windClassification >= 8.0 ) ) {
+		$windScale = "Fresh breeze";
+	} elseif ( ( $windClassification < 8.0 ) && ( $windClassification >= 5.5 ) ) {
+		$windScale = "Moderate breeze";
+	} elseif ( ( $windClassification < 5.5 ) && ( $windClassification >= 3.4 ) ) {
+		$windScale = "Gentle breeze";
+	} elseif ( ( $windClassification < 3.4 ) && ( $windClassification >= 1.6 ) ) {
+		$windScale = "Light breeze";
+	} elseif ( ( $windClassification < 1.6 ) && ( $windClassification >= 0.3 ) ) {
+		$windScale = "Light air";
 	} else {
-		if ( ( $windClassification < 32.7 ) && ( $windClassification >= 28.5 ) ) {
-			$windScale = "Violent storm";
-		} else {
-			if ( ( $windClassification < 28.5 ) && ( $windClassification >= 24.5 ) ) {
-				$windScale = "Storm, whole gale";
-			} else {
-				if ( ( $windClassification < 24.5 ) && ( $windClassification >= 20.8 ) ) {
-					$windScale = "Strong, severe gale";
-				} else {
-					if ( ( $windClassification < 20.8 ) && ( $windClassification >= 17.2 ) ) {
-						$windScale = "Gale, fresh gale";
-					} else {
-						if ( ( $windClassification < 17.2 ) && ( $windClassification >= 13.9 ) ) {
-							$windScale = "sHigh wind, moderate gale, near gale";
-						} else {
-							if ( ( $windClassification < 13.9 ) && ( $windClassification >= 10.8 ) ) {
-								$windScale = "Strong breeze";
-							} else {
-								if ( ( $windClassification < 10.8 ) && ( $windClassification >= 8.0 ) ) {
-									$windScale = "Fresh breeze";
-								} else {
-									if ( ( $windClassification < 8.0 ) && ( $windClassification >= 5.5 ) ) {
-										$windScale = "Moderate breeze";
-									}
-									if ( ( $windClassification < 5.5 ) && ( $windClassification >= 3.4 ) ) {
-										$windScale = "Gentle breeze";
-									}
-									if ( ( $windClassification < 3.4 ) && ( $windClassification >= 1.6 ) ) {
-										$windScale = "Light breeze";
-									}
-									if ( ( $windClassification < 1.6 ) && ( $windClassification >= 0.3 ) ) {
-										$windScale = "Light air";
-									} else {
-										$windScale = "Calm";
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		$windScale = "Calm";
 	}
 
 	return $windScale;
